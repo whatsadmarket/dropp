@@ -1,5 +1,15 @@
 var step_out = require("request");
+var multer = require('multer');
+var storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './uploads/users');
+    },
+    filename: function (req, file, callback) {
+        callback(null, `${req.params.id}.jpg`);
+    }
+});
 
+var upload = multer({ storage : storage});
 
 function makePostCall(data_, endpoint, auth_token = '', expected_json = true) {
     options = getHeaders(data_, endpoint, auth_token);
@@ -56,7 +66,7 @@ function talkBack(res, code, word, json_ = false) {
 
 function outPut(res, source, errors = false) {
     if (res.status == 500 || res.status == 403 || res.status == 401) {
-        waya.talk(res, 401, { success:false, response: `An error occurred. ${res.message}`}, true);
+        talkBack(res, 401, { success:false, response: `An error occurred. ${res.message}`}, true);
         return false;
     }
 
@@ -74,5 +84,6 @@ function outPut(res, source, errors = false) {
 module.exports = {
     'talk' : talkBack,
     'call' : makeGetCall,
-    'out' : outPut
+    'out' : outPut,
+    'upload' : upload
 }

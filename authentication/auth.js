@@ -29,6 +29,8 @@ router.post('/signin', function(req, res) {
               conn.release;
               drop.out(res, { message:"Invalid mobile number/password supplied" }, true);
             }
+          } else {
+            console.log(err);
           }
         });
       }
